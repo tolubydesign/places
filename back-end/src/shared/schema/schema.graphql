@@ -1,0 +1,216 @@
+# Comments in GraphQL strings (such as this one) start with the hash (#) symbol.
+# This "Book" type defines the queryable fields for every book in our data source.
+type Book {
+  title: String
+  author: String
+}
+
+type Account {
+  username: String
+  account_type: String
+  user_group: String
+  email: String
+  phone: String
+  user_id: String
+}
+
+type AccountSignIn {
+  email: String
+  username: String
+  phone: String
+  user_id: String
+  password: String
+}
+
+type UserLoginResponse {
+  token: String
+  username: String
+  email: String
+  account_type: String
+  # optional
+  user_group: String
+  phone: String
+  user_id: String
+}
+
+type UserVerificationResponse {
+  verified: Boolean
+  username: String
+  email: String
+  account_type: String
+}
+
+type AccountWithPassword {
+  username: String
+  password: String
+  account_type: String
+  user_group: String
+  email: String
+  phone: String
+  user_id: String
+}
+
+type ChatChannelResponse {
+  id: Int
+  name: String
+  creator_id: String
+}
+
+type ChatMessageResponse {
+  id: Int
+  username: String
+  createdAt: String # ALSO DateTime
+  user_email: String
+  channel_id: Int
+  message: String
+}
+
+interface MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+}
+
+type CreatedChannelMutationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+}
+
+type BasicHTTPMutationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+}
+
+input UserAccount {
+  email: String!,
+  username: String!,
+  phone: String!,
+  user_group: String!,
+  account_type: String!,
+  user_id: String!
+}
+
+input AccountCreation {
+  email: String!,
+  username: String!,
+  password: String!,
+  phone: String!,
+  user_group: String!,
+  account_type: String!,
+}
+
+input ChatChannel {
+  name: String!
+  messages: [ChatMessage]
+  user: UserAccount
+}
+
+input ChatMessage {
+  username: String!
+  userEmail: String!
+  channel: ChatChannel!
+}
+
+# The implementation for this scalar is provided by the
+# 'GraphQLUpload' export from the 'graphql-upload' package
+# in the resolver map below.
+scalar Upload
+
+type FileResponse {
+  filename: String!
+  mimetype: String!
+  encoding: String!
+}
+
+type File {
+  serverFileName: String
+  uploadedFileName: String
+  mimetype:String
+  encoding: String
+  uploadedAt: String # ALSO DateTime
+  project_id: Int
+  creator: String
+}
+
+type S3FileResponse {
+  AcceptRanges: String
+  LastModified: String
+  ContentLength: Int
+  ETag: String 
+  ContentType: String
+  # Metadata: S3FileMetadataResponse
+  Body: S3FileBodyBufferResponse
+  BodyStringify: String
+  BufferStringify: String
+  filename: String
+}
+
+type S3FileBodyBufferResponse {
+  type: String 
+  data: [Int]
+}
+
+type ProjectPackResponse {
+  id: Int 
+  project_name:String
+  creator_email: String
+  createdAt: String # ALSO DateTime
+  participants: [String] 
+  files: [File]
+}
+
+# The "Query" type is special: it lists all of the available queries that
+# clients can execute, along with the return type for each. In this
+# case, the "books" query returns an array of zero or more Books (defined above).
+type Query {
+  accounts: [Account]
+  getAccount(email: String!): Account
+  getAccountDetail(email: String!): Account
+  findAccountById(email: String!, searchingId: String!): Account
+  generateNewUserToken(email: String!): UserLoginResponse
+  # (below) previously  userSignIn(email: String!): AccountSignIn 
+  userSignIn(email: String!, password: String!): UserLoginResponse
+  userSignOut(email: String!): BasicHTTPMutationResponse
+  verifyUser(email: String!): UserVerificationResponse
+  getAllUserAccounts(email: String!): [Account]
+
+  # Chat
+  getAllChatChannels: [ChatChannelResponse]
+  getRecentChatChannels: [ChatChannelResponse]
+  getChatChannel(channelName: String!): ChatChannelResponse
+  fetchChannelMessages(channelName: String!): [ChatMessageResponse]
+
+  # File
+  getAllFiles(email: String!): [File]
+  getRecentFiles(email: String!): [File]
+  downloadFile(email: String!, filePath: String!, mimetype: String!): S3FileResponse
+
+  # Projects
+  listProjectPacks(email: String!): [ProjectPackResponse]
+  getProject(email: String, packName: String!): ProjectPackResponse
+  getProjectFiles(email: String!, packName: String!): [File]
+}
+
+# Mutations
+type Mutation {
+  createAccount(email: String!, username: String!, password: String!, phone: String, user_group: String, account_type: String): Account
+  deleteAccount(user_id: String!): Account
+  updateAccountDetail(email: String, username: String, phone: String, user_group: String): BasicHTTPMutationResponse
+  updateAccountPassword(email: String, currentPassword: String, newPassword: String): BasicHTTPMutationResponse
+  adminUpdateAccount(email: String!, account_type: String!, phone: String, username: String!, password: String!, user_group: String): Account
+  userUpdateAccount(email: String!, account_type: String!, phone: String, username: String!, user_group: String!): Account
+  addAccount(email: String!, account: AccountCreation!): BasicHTTPMutationResponse
+
+  # Chat
+  createChatChannel(channelName: String!, creatorEmail: String!): BasicHTTPMutationResponse
+  createMessage(username: String!, channel_id: Int!, message: String!, user_email: String!): CreatedChannelMutationResponse
+  
+  # Files
+  uploadFile(email: String!, file: Upload!, projectId: Int): BasicHTTPMutationResponse
+
+  # Project Packs
+  createProjectPack(email: String!, projectName: String!, participants: [String]): BasicHTTPMutationResponse
+  addParticipantToProjectPack(email: String!, projectId: Int!, participant: String!): BasicHTTPMutationResponse
+}

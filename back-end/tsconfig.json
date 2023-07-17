@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "rootDirs": ["src"],
+    "outDir": "dist",
+    "lib": ["es2020"],
+    "target": "es2020",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "types": ["node"],
+    "rootDir": "./",
+    "strict": true,
+    "sourceMap": false,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+  },
+  "include": [
+    "src/**/*.ts",
+    "./@types"
+  ],
+  
+  "exclude": [
+    "node_modules",
+  ],
+  // NEW: Options for file/directory watching
+  "watchOptions": {
+    // Use native file system events for files and directories
+    "watchFile": "useFsEvents",
+    "watchDirectory": "useFsEvents",
+    // Poll files for updates more frequently
+    // when they're updated a lot.
+    "fallbackPolling": "dynamicPriority",
+    // Don't coalesce watch notification
+    "synchronousWatchDirectory": true,
+    // Finally, two additional settings for reducing the amount of possible
+    // files to track  work from these directories
+    "excludeDirectories": ["**/node_modules", "_build"],
+    "excludeFiles": ["build/fileWhichChangesOften.ts", "src/shared/schema/schema.graphql"]
+  }
+}
