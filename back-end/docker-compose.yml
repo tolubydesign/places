@@ -1,31 +1,44 @@
 # Use root/example as user/password credentials
 version: '3'
 services:
-  mysql_db:
-    image: mysql
-    container_name: placesmysqlcontainer
+  mariadb:
+    # Resource: https://mariadb.com/kb/en/mariadb-basics/
+
+    # Get into database
+    # $ sudo mariadb -u root -p -h localhost
+    # $ mysql -u [username] -p[password]
+    # Resource: https://www.sqlshack.com/how-to-backup-and-restore-mysql-databases-using-the-mysqldump-command/
+    # Resource: https://mariadb.com/kb/en/uuid/
+    # Resource: https://mariadb.com/docs/skysql-dbaas/ref/cs10.5/cli/mariadb-dump/
+    image: mariadb:11
+    container_name: placesmariadbcontainer
     # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
     # (this is just an example, not intended to be a production configuration)
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: mysecretmysqlpassword
-      MYSQL_DATABASE: mysql
+      MARIADB_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: mariadatabase
       MYSQL_USER: mysqluser
       MYSQL_PASSWORD: secret
+    # port:
+    #   - 3306:3306
     volumes:
-      - $PWD/_mysql_databas/my/own/datadir:/var/lib/mysql
-  
+      - $PWD/_mariadb_database/:/var/lib/mysql
+      # - ./dev/mariadb:/docker-entrypoint-initdb.d
+
   adminer:
-    image: adminer
+    image: adminer:4
+    container_name: placesadminercontainer
     restart: always
     ports:
-      - 1020:1020
-      # - 8080:8080
+      - 8080:8080
+    environment:
+      ADMINER_DEFAULT_SERVER: mariadb
 
   redis:
     image: redis:7
-    container_name: redisstorycontainer
+    container_name: placesrediscontainer
     ports:
       - '6379:6379'
     volumes: 
@@ -33,7 +46,7 @@ services:
 
   minio:
     image: minio/minio:latest
-    container_name: miniostorycontainer
+    container_name: placesminiocontainer
     ports:
       - '9000:9000'
       - '9001:9001'
@@ -45,8 +58,8 @@ services:
     command: server --console-address ":9001" /data
 
 volumes:
-  mysql_databas:
+  _mariadb_databas:
     driver: local
-  minio_storage: {}
+  _minio_storage: {}
   redis_database:
     driver: local

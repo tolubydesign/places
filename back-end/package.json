@@ -5,7 +5,8 @@
     "dev": "tsc --project './tsconfig.json' --watch & nodemon -r ./dist/src/server.js",
     "build": "tsc --project './tsconfig.json'",
     "compile": "tsc",
-    "start": "npm run compile && node ./dist/index.js"
+    "start": "npm run compile && node ./dist/index.js",
+    "init-database": "sh database/init-database-db.sh"
   },
   "dependencies": {
     "@apollo/server": "^4.7.5",
