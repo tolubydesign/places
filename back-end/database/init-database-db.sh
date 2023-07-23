@@ -3,6 +3,9 @@
 echo "Initalising database bash"
 # mysql -h { hostname } -u { user } database < path/to/test.sql
 # sudo mariadb -h localhost -u root -c "$(cat $PWD/database/preload.sql)"\
+DB="mydb"
+USER="user1"
+PASS="pass_bla"
 
 # Create database
 # https://stackoverflow.com/questions/2428416/how-to-create-a-database-from-shell-command

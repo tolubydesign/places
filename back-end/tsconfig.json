@@ -1,16 +1,26 @@
 {
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  },
   "compilerOptions": {
+    
     "rootDirs": ["src"],
     "outDir": "dist",
     "lib": ["es2020"],
     "target": "es2020",
-    "module": "esnext",
-    "moduleResolution": "node",
+
     "esModuleInterop": true,
+    "moduleResolution": "node",
+    // "module": "CommonJS",
+
+    "module": "esnext",
+    // "moduleResolution": "node",
+    // "esModuleInterop": true,
     "types": ["node"],
     "rootDir": "./",
     "strict": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "baseUrl": "./",
     "paths": {
       "@/*": ["./src/*"]
@@ -18,11 +28,13 @@
   },
   "include": [
     "src/**/*.ts",
-    "./@types"
+    "./@types",
+    "tests/**/*.ts"
   ],
   
   "exclude": [
     "node_modules",
+    ".vscode"
   ],
   // NEW: Options for file/directory watching
   "watchOptions": {

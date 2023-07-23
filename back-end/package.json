@@ -1,10 +1,11 @@
 {
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "nodemon ./src/server.ts",
+    "serve": "nodemon --esm ./src/server.ts",
+    "se": "nodemon --exec npm run compile && node ./dist/src/server.js",
     "dev": "tsc --project './tsconfig.json' --watch & nodemon -r ./dist/src/server.js",
     "build": "tsc --project './tsconfig.json'",
-    "compile": "tsc",
+    "compile": "tsc --project './tsconfig.json'",
     "start": "npm run compile && node ./dist/index.js",
     "init-database": "sh database/init-database-db.sh"
   },
@@ -17,7 +18,10 @@
     "winston": "^3.10.0"
   },
   "devDependencies": {
+    "@types/node": "^20.4.4",
     "nodemon": "^3.0.1",
+    "ts-node": "^10.9.1",
+    "tslib": "^2.6.0",
     "typescript": "^5.1.6"
   },
   "type": "module"
