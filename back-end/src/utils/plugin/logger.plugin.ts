@@ -1,8 +1,9 @@
-import { ApolloServerPlugin } from "@apollo/server";
-import { logger } from "@/core/log/winston-logging";
-import { trimSpace } from "@/utils/modify.utils";
+import { ApolloServerPlugin, GraphQLRequestContext, GraphQLRequestListener } from "@apollo/server";
+import { logger } from "../../core/log/winston-logging";
+import { trimSpace } from "../../utils/modify.utils";
 import * as dotenv from 'dotenv';
-import { PluginContext } from "@/utils/plugin/models.plugin";
+import { PluginContext } from "../../utils/plugin/models.plugin";
+import { RequestHandler } from "express";
 dotenv.config()
 
 const serverOrigin = process.env.SERVER_ORIGIN
@@ -10,12 +11,12 @@ const serverOrigin = process.env.SERVER_ORIGIN
 /**
  * @description Apollo Middleware Plugin  Apollo Server Plugin for server logging. Utilises Winston
  * @param options.logMessage Specify if we want to log events or not
- * @returns 
+ * @returns ApolloServerPlugin 
  * 
  * @see {@link https://www.apollographql.com/docs/apollo-server/integrations/plugins/}
  * @see {@link https://www.apollographql.com/docs/apollo-server/integrations/plugins-event-reference}
  */
-export default function (options: { logMessage: boolean }): ApolloServerPlugin<PluginContext> {
+function ServerMiddleware({ logMessage }: { logMessage: boolean }): any {
   return {
     async serverWillStart() {
       logger.info("Apollo Server started.");
@@ -27,7 +28,7 @@ export default function (options: { logMessage: boolean }): ApolloServerPlugin<P
       };
     },
 
-    async requestDidStart(requestContext) {
+    async requestDidStart(requestContext: GraphQLRequestContext<any>): Promise<GraphQLRequestListener<any> | void> {
       const origin = requestContext.request.http?.headers.get('origin');
       const requestQuery = trimSpace(requestContext.request.query);
       let operation = requestContext.request.operationName;
@@ -90,3 +91,5 @@ export default function (options: { logMessage: boolean }): ApolloServerPlugin<P
     },
   };
 }
+
+export default ServerMiddleware;

@@ -7,6 +7,8 @@ const PrintFormat = printf(({ level, message, label, timestamp, }) => {
   return `${level} ${timestamp} ${label} ${message}`;
 });
 
+const transport = new winston.transports.Console();
+
 // TODO: Connect to Redis Database
 /**
  * @description Log events occuring on the Apollo server.
@@ -18,33 +20,32 @@ export const logger = createLogger({
   level: 'info',
   format: combine(
     timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
-    label({ label: process.env.NODE_ENV }),
+    label({ label: process.env.ENV }),
     PrintFormat,
   ),
   transports: [
-    new transports.File({
+    new transports.Http(),
+    new transports.Console({
       // filename: 'public/logs/error.log', 
       level: 'error'
     }),
-    new transports.File({
+    new transports.Console({
       // filename: 'public/logs/combined.log',
-      maxsize: 5242880,
-      maxFiles: 5,
     }),
   ],
   exceptionHandlers: [
-    new transports.File({
+    new transports.Console({
       // filename: "public/logs/exceptions.log"
     })
   ],
   rejectionHandlers: [
-    new transports.File({
+    new transports.Console({
       // filename: "public/logs/rejections.log"
     })
   ],
 });
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.ENV !== 'production') {
   logger.add(new winston.transports.Console({
     format: winston.format.simple(),
   }));
