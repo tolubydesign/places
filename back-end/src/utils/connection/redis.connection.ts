@@ -28,9 +28,6 @@ class RedisConnection {
     try {
       this.redisSingletonClient = createClient({
         url: this.databaseUrl,
-        // database: this.falseConfig.database,
-        // username: this.falseConfig.user,
-        // password: this.falseConfig.password,
       });
       await this.redisSingletonClient?.connect();
     } catch (error: any) {
