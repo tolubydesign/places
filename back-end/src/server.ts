@@ -4,10 +4,9 @@ import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHt
 import express from 'express';
 import http from 'http';
 import { resolvers } from './core/resolvers/resolver';
-import ServerMiddleware from './utils/plugin/logger.plugin';
+import { ServerMiddleware } from './utils/plugin/logger.plugin';
 import { ApolloServer, BaseContext } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
-import { PluginContext } from './utils/plugin/models.plugin';
 
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
@@ -26,7 +25,10 @@ const httpServer = http.createServer(app);
 const server: ApolloServer<BaseContext> = new ApolloServer({
   typeDefs,
   resolvers,
-  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  plugins: [
+    ApolloServerPluginDrainHttpServer({ httpServer }),
+    ServerMiddleware()
+  ],
 });
 
 await server.start();

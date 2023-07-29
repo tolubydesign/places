@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "nodemon --esm ./src/server.ts",
@@ -16,6 +17,7 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "graphql": "^16.7.1",
+    "redis": "^4.6.7",
     "winston": "^3.10.0"
   },
   "devDependencies": {
@@ -24,6 +26,5 @@
     "ts-node": "^10.9.1",
     "tslib": "^2.6.0",
     "typescript": "^5.1.6"
-  },
-  "type": "module"
+  }
 }

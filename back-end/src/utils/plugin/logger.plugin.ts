@@ -1,87 +1,89 @@
-import { ApolloServerPlugin, GraphQLRequestContext, GraphQLRequestListener } from "@apollo/server";
-import { logger } from "../../core/log/winston-logging";
-import { trimSpace } from "../../utils/modify.utils";
+import {
+  ApolloServerPlugin,
+  GraphQLRequestContext,
+  GraphQLRequestContextDidEncounterErrors,
+  GraphQLRequestContextDidResolveOperation,
+  GraphQLRequestContextExecutionDidStart,
+  GraphQLRequestContextParsingDidStart,
+  GraphQLRequestContextValidationDidStart,
+  GraphQLRequestExecutionListener,
+  GraphQLRequestListener,
+  GraphQLRequestListenerParsingDidEnd,
+  GraphQLRequestListenerValidationDidEnd,
+  GraphQLServerContext,
+  GraphQLServerListener
+} from "@apollo/server";
+// import { logger } from "../../core/log/winston-logging";
 import * as dotenv from 'dotenv';
-import { PluginContext } from "../../utils/plugin/models.plugin";
-import { RequestHandler } from "express";
+import { ApolloPluginContext } from "./models.plugin";
+import serverLogger from "../../core/log/logger";
 dotenv.config()
 
-const serverOrigin = process.env.SERVER_ORIGIN
+const serverOrigin = process.env.SERVER_ORIGIN;
+const logger = serverLogger;
+logger.setLogKey("apollo-middleware");
 
 /**
  * @description Apollo Middleware Plugin  Apollo Server Plugin for server logging. Utilises Winston
- * @param options.logMessage Specify if we want to log events or not
  * @returns ApolloServerPlugin 
  * 
  * @see {@link https://www.apollographql.com/docs/apollo-server/integrations/plugins/}
  * @see {@link https://www.apollographql.com/docs/apollo-server/integrations/plugins-event-reference}
  */
-function ServerMiddleware({ logMessage }: { logMessage: boolean }): any {
+export function ServerMiddleware(): ApolloServerPlugin<ApolloPluginContext> {
   return {
-    async serverWillStart() {
-      logger.info("Apollo Server started.");
+    async serverWillStart(service: GraphQLServerContext): Promise<void | GraphQLServerListener> {
+      logger.info("Server will start.");
 
       return {
-        async serverWillStop() {
-          logger.info("Apollo Server stopped.");
+        async serverWillStop(): Promise<void> {
+          logger.info("Server will stop.");
         },
       };
     },
 
-    async requestDidStart(requestContext: GraphQLRequestContext<any>): Promise<GraphQLRequestListener<any> | void> {
-      const origin = requestContext.request.http?.headers.get('origin');
-      const requestQuery = trimSpace(requestContext.request.query);
-      let operation = requestContext.request.operationName;
-      const requestID = requestContext.contextValue.uuid
-      const logObj = {
-        queries: requestQuery,
-        variables: requestContext.request.variables,
-        origin: origin,
-      };
-
-      // Make sure request from apollo server are not stored
-      if (origin && origin !== serverOrigin) {
-        logger.info(`REQUEST ID: ${requestID} QUERIES: ${operation} VARIABLES: ${JSON.stringify(requestContext.request.variables)} ORIGIN: ${origin} `)
-      }
-
-      if (!origin) logger.warn(`REQUEST ID: ${requestID} QUERIES: ${operation} VARIABLES: ${JSON.stringify(requestContext.request.variables)} ORIGIN: ${origin}`)
-
+    async requestDidStart(context: GraphQLRequestContext<any>): Promise<GraphQLRequestListener<any> | void> {
       return {
-        async parsingDidStart({ contextValue, request }) {
+        async parsingDidStart(requestContext: GraphQLRequestContextParsingDidStart<any>): Promise<void | GraphQLRequestListenerParsingDidEnd> {
+          // NOTE: function called when new request has been started
+          logger.info(`request did start - parsing did start`);
+
           return async (err: Error | undefined) => {
             if (err) {
-              logger.error(`PARSING ID: ${requestID} ERROR: ${JSON.stringify(err)}`)
+              logger.error(`ERROR - request did start - parsing did start`);
             }
           };
         },
 
-        async didResolveOperation({ contextValue, request, errors }) {
-          if (errors) {
-            logger.error(`OPERATION-RESOLVE ID: ${requestID} ERROR: ${JSON.stringify(errors)}`);
+        async didResolveOperation(requestContext: GraphQLRequestContextDidResolveOperation<any>): Promise<void> {
+          if (requestContext?.errors) {
+            logger.error(`ERROR - request did start - did resolve operation`);
           }
         },
 
-        // Fires whenever Apollo Server will validate a
-        // request's document AST against your GraphQL schema.
-        async validationDidStart({ contextValue, request }) {
+        // Fires whenever Apollo Server will validate a request's document AST against your GraphQL schema.
+        async validationDidStart(requestContext: GraphQLRequestContextValidationDidStart<any>): Promise<void | GraphQLRequestListenerValidationDidEnd> {
           // This end hook is unique in that it can receive an array of errors,
           // which will contain every validation error that occurred.
-          return async (errors) => {
+          return async (errors: readonly Error[] | undefined) => {
             if (errors) {
-              logger.error(`VALIDATION ID: ${requestID} ERROR: ${JSON.stringify(errors)}`)
-              errors.forEach((err) => console.error(err));
+              logger.error(`ERROR - request did start - validation did start`)
             }
+
+            return
           };
         },
 
-        async didEncounterErrors({ errors, schema }) {
-          if (errors) logger.error(`ENCOUNTERED-ERRORS ID: ${requestID} ERROR: ${JSON.stringify(errors)}`)
+        async didEncounterErrors(requestContext: GraphQLRequestContextDidEncounterErrors<any>): Promise<void> {
+          if (requestContext?.errors) logger.error(`ERROR - request did start - did encounter errors`);
         },
 
-        async executionDidStart() {
+        async executionDidStart(requestContext: GraphQLRequestContextExecutionDidStart<any>): Promise<void | GraphQLRequestExecutionListener<any>> {
+          // NOTE: infinite requests made here. (When using apollo graphql website)
           return {
             async executionDidEnd(err) {
               if (err) {
+                logger.info("ERROR - request did start - execution did start - execution did end");
                 console.error(err);
               }
             },
@@ -91,5 +93,3 @@ function ServerMiddleware({ logMessage }: { logMessage: boolean }): any {
     },
   };
 }
-
-export default ServerMiddleware;
