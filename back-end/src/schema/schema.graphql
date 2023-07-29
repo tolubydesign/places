@@ -10,12 +10,35 @@ type Author {
   books: [Book]
 }
 
+enum Episode {
+  private
+  public
+}
+
+type Place {
+  id: String 
+  name: String,
+  description: String
+  location_type: String
+  latitude: String
+  longitude: String
+  event_time: String
+  event_type: Episode
+  street: String
+  city: String
+  suburb: String
+  country: String
+  province: String
+  code: String
+}
+
 # The "Query" type is special: it lists all of the available queries that
 # clients can execute, along with the return type for each. In this
 # case, the "books" query returns an array of zero or more Books (defined above).
 type Query {
   books: [Book],
-  GetAllBooks: [Book]
+  GetAllBooks: [Book],
+  information: [Place]
 }
 
 # Mutations

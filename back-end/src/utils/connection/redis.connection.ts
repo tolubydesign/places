@@ -6,6 +6,7 @@ import { RedisClientType, RedisModules, createClient } from 'redis';
  * 
  * @see {@link https://northflank.com/guides/connecting-to-a-redis-database-using-node-js}
  * @see {@link https://betterstack.com/community/guides/scaling-nodejs/}
+ * @see {@link https://redis.io/docs/clients/nodejs/}
  */
 class RedisConnection {
   private redisSingletonClient: RedisClientType | undefined;

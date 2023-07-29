@@ -21,8 +21,8 @@ services:
       MYSQL_DATABASE: mariadatabase
       MYSQL_USER: mysqluser
       MYSQL_PASSWORD: secret
-    # port:
-    #   - 3306:3306
+    ports:
+      - 1022:3306
     volumes:
       - $PWD/_mariadb_database/:/var/lib/mysql
       # - ./dev/mariadb:/docker-entrypoint-initdb.d
