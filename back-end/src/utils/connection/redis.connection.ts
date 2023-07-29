@@ -1,6 +1,12 @@
 import { RedisClientType, RedisModules, createClient } from 'redis';
 
 // TODO: create configuration function
+/**
+ * A general class to establish a connection with the Reds database
+ * 
+ * @see {@link https://northflank.com/guides/connecting-to-a-redis-database-using-node-js}
+ * @see {@link https://betterstack.com/community/guides/scaling-nodejs/}
+ */
 class RedisConnection {
   private redisSingletonClient: RedisClientType | undefined;
   private readonly falseConfig = {

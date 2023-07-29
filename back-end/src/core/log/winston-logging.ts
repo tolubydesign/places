@@ -14,6 +14,7 @@ const consoleTransport = new transports.Console();
  * @description Log events occurring on the Apollo server.
  * @see {@link https://github.com/winstonjs/winston}
  * @see {@link https://www.npmjs.com/package/winston}
+ * @see {@link https://snyk.io/advisor/npm-package/winston/functions/}
  * @see {@link https://blog.appsignal.com/2021/09/01/best-practices-for-logging-in-nodejs.html}
  */
 export const logger = createLogger({
