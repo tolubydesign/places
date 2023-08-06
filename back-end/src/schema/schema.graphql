@@ -15,9 +15,14 @@ enum Episode {
   public
 }
 
+enum AccountType {
+  user
+  admin
+}
+
 type Place {
   id: String 
-  name: String,
+  name: String
   description: String
   location_type: String
   latitude: String
