@@ -15,3 +15,14 @@ export type Place = {
   province: string,
   code: number,
 }
+
+export type Account = {
+  id: string,
+  username: string,
+  name: string,
+  lastname: string,
+  password: string,
+  email: string,
+}
+
+export type AccountDetails = Omit<Account, "password">;

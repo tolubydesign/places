@@ -9,7 +9,7 @@ PASS="pass_bla"
 
 # Create database
 # https://stackoverflow.com/questions/2428416/how-to-create-a-database-from-shell-command
-echo "create database mariadatabase" | sudo mariadb -u root -p -h localhost
+echo "create database if not exists mariadatabase" | sudo mariadb -u root -p -h localhost
 # alt: echo "create database `database-name`" | mysql -u username -p
 # Create database and user with access to that database
 # alt: mysql -u base_user -pbase_user_pass -e "create database new_db; GRANT ALL PRIVILEGES ON new_db.* TO new_db_user@localhost IDENTIFIED BY 'new_db_user_pass'"

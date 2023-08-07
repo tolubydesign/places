@@ -23,6 +23,7 @@ drop table if exists
   link,
   user,
   place;
+DROP TABLE IF EXISTS bookmark;
 
 CREATE TABLE IF NOT EXISTS link (
   id UUID NOT NULL DEFAULT UUID(),
@@ -42,7 +43,9 @@ VALUES
 -- TODO: expand on user table requirements
 CREATE TABLE IF NOT EXISTS account (
   id UUID NOT NULL DEFAULT UUID(),
-  username VARCHAR (100) NOT NULL ,
+  username VARCHAR (100) NOT NULL,
+  name TEXT,
+  lastname TEXT, 
   password TEXT NOT NULL,
   email TEXT NOT NULL UNIQUE,
 
@@ -65,6 +68,7 @@ CREATE TABLE IF NOT EXISTS place (
   id UUID NOT NULL DEFAULT UUID(),
   name VARCHAR (255) NOT NULL,
   description VARCHAR (255) DEFAULT '',
+  owner UUID,
   location_type VARCHAR(250),
   latitude Decimal(8,6),
   longitude DECIMAL(9, 6),
@@ -79,6 +83,18 @@ CREATE TABLE IF NOT EXISTS place (
   code VARCHAR (255) NOT NULL,
 
   PRIMARY KEY(id)
+);
+
+
+-- Bookmarks
+CREATE TABLE IF NOT EXISTS bookmark (
+  id UUID NOT NULL DEFAULT UUID(),
+  name TEXT,
+  information TEXT,
+
+  -- Reference resource "Foreign key and references": https://stackoverflow.com/questions/17371639/how-to-store-arrays-in-mysql
+  PRIMARY KEY (id),
+  FOREIGN KEY (id) REFERENCES account (id)
 );
 
 INSERT INTO place(name, description, location_type, latitude, longitude, event_time, event_type, street, suburb, city, province, country, code)
