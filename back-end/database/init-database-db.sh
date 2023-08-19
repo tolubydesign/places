@@ -1,19 +1,18 @@
 #!/bin/bash
 # set -e
 echo "Initalising database bash"
-# mysql -h { hostname } -u { user } database < path/to/test.sql
-# sudo mariadb -h localhost -u root -c "$(cat $PWD/database/preload.sql)"\
-DB="mydb"
-USER="user1"
-PASS="pass_bla"
+echo What is the name of the docker container:
+read container_name
 
+db="mydb"
+
+# Connect with a mariadb that has not been created by docker.
+# echo "create database if not exists mariadatabase" | sudo mariadb -u root -p -h localhost
+# sudo mariadb -u root -p mariadatabase < $PWD/database/preload.sql
+
+# Update docker container
 # Create database
-# https://stackoverflow.com/questions/2428416/how-to-create-a-database-from-shell-command
-echo "create database if not exists mariadatabase" | sudo mariadb -u root -p -h localhost
-# alt: echo "create database `database-name`" | mysql -u username -p
-# Create database and user with access to that database
-# alt: mysql -u base_user -pbase_user_pass -e "create database new_db; GRANT ALL PRIVILEGES ON new_db.* TO new_db_user@localhost IDENTIFIED BY 'new_db_user_pass'"
+echo "create database if not exists mariadatabase" | sudo docker exec -i $container_name mariadb --user root -psecret -h localhost
 
 # Import into SQL Database
-# https://www.digitalocean.com/community/tutorials/how-to-import-and-export-databases-in-mysql-or-mariadb
-sudo mariadb -u root -p mariadatabase < $PWD/database/preload.sql
+sudo docker exec -i $container_name mariadb -u root -psecret mariadatabase < $PWD/database/preload.sql

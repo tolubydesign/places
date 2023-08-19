@@ -1,22 +1,5 @@
--- Preload data (mysql)
--- https://github.com/codefresh-contrib/preload-db-integration-tests
--- https://codefresh.io/docs/docs/example-catalog/ci-examples/populate-a-database-with-existing-data/
--- https://stackoverflow.com/questions/64110948/docker-compose-mariadb-with-adminer
--- https://www.beekeeperstudio.io/blog/how-to-use-mariadb-with-docker
-
-
--- $ sudo mariadb -u root < $PWD/database/preload.sql
--- $ sudo mariadb -u root --database=mysql < $PWD/database/preload.sql
-
--- Import database into mariadb
--- $ $PWD/database/preload.sql
-
--- install gen_random_uuid()
--- CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
-DROP DATABASE IF EXISTS mariadatabase;
-
-CREATE DATABASE mariadatabase;
+-- DROP DATABASE IF EXISTS mariadatabase;
+-- CREATE DATABASE mariadatabase;
 USE mariadatabase;
 
 drop table if exists
@@ -24,6 +7,7 @@ drop table if exists
   user,
   place;
 DROP TABLE IF EXISTS bookmark;
+DROP TABLE IF EXISTS account;
 
 CREATE TABLE IF NOT EXISTS link (
   id UUID NOT NULL DEFAULT UUID(),
@@ -45,7 +29,7 @@ CREATE TABLE IF NOT EXISTS account (
   id UUID NOT NULL DEFAULT UUID(),
   username VARCHAR (100) NOT NULL,
   name TEXT,
-  lastname TEXT, 
+  surname TEXT, 
   password TEXT NOT NULL,
   email TEXT NOT NULL UNIQUE,
 
@@ -56,12 +40,13 @@ CREATE TABLE IF NOT EXISTS account (
 -- CreateIndex
 -- CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
-INSERT INTO account(username, password, email)
+INSERT INTO account(username, password, email, name, surname)
 VALUES
-  ("john", "password", "john@john.com"),
-  ("sam", "password", "sam@gmail.com"),
-  ("jack", "password", "jack@mail.com"),
-  ("mark", "password", "mark@cmail.com");
+  ("john", "password", "john@john.com", "John", "Smith"),
+  ("sam", "password", "sam@gmail.com", "Sam", "Fisher" ),
+  ("jack", "password", "jack@mail.com", "Jack", "Carber"),
+  ("mark", "password", "mark@cmail.com", "Mark", "Wallberg"),
+  ("abbrem", "word", "ab@gmail.com", "Abb", "Abraham");
 
 -- Table
 CREATE TABLE IF NOT EXISTS place (
