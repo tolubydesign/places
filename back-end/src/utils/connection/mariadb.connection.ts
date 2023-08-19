@@ -1,4 +1,4 @@
-import mariadb, { type PoolConnection, type Pool } from "mariadb";
+import { createPool, type PoolConnection, type Pool } from "mariadb";
 
 class MariadbConnection {
   private pool: Pool | undefined;
@@ -7,13 +7,13 @@ class MariadbConnection {
   }
 
   private establishConnection() {
-    this.pool = mariadb.createPool({
+    this.pool = createPool({
       host: "localhost",
       user: "mysqluser",
       password: "secret",
       database: "mariadatabase",
-      port: 1022
-      // connectionLimit: 100,
+      port: 1022,
+      connectionLimit: 5,
     });
 
     console.log("Total connections: ", this.pool.totalConnections());
