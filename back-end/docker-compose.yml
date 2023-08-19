@@ -1,20 +1,9 @@
-# Use root/example as user/password credentials
 version: '3'
 services:
   mariadb:
-    # Resource: https://mariadb.com/kb/en/mariadb-basics/
-
-    # Get into database
-    # $ sudo mariadb -u root -p -h localhost
-    # $ mysql -u [username] -p[password]
-    # Resource: https://www.sqlshack.com/how-to-backup-and-restore-mysql-databases-using-the-mysqldump-command/
-    # Resource: https://mariadb.com/kb/en/uuid/
-    # Resource: https://mariadb.com/docs/skysql-dbaas/ref/cs10.5/cli/mariadb-dump/
     image: mariadb:11
     container_name: placesmariadbcontainer
-    # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
-    # (this is just an example, not intended to be a production configuration)
-    command: --default-authentication-plugin=mysql_native_password
+    command: --default-authentication-plugin=mysql_native_password --max_allowed_packet=32505856 # Set max_allowed_packet to 256M (or any other value)
     restart: always
     environment:
       MARIADB_ROOT_PASSWORD: secret
@@ -25,7 +14,6 @@ services:
       - 1022:3306
     volumes:
       - $PWD/_mariadb_database/:/var/lib/mysql
-      # - ./dev/mariadb:/docker-entrypoint-initdb.d
 
   adminer:
     image: adminer:4
