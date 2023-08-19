@@ -1,6 +1,20 @@
-type ErrorDetail = { status: string, message: string}
+type ErrorDetail = { status: string, message: string }
 
-type ResponseStatus = Record<number, ErrorDetail>
+const ErrorArray = [
+  200,
+  201,
+  202,
+  400,
+  401,
+  403,
+  404,
+  500,
+  501,
+  502,
+] as const;
+
+type PossibleErrorCodes = typeof ErrorArray[keyof typeof ErrorArray];
+type ResponseStatus = Record<typeof ErrorArray[number], ErrorDetail>;
 
 const errors: ResponseStatus = {
   200: {
@@ -21,15 +35,15 @@ const errors: ResponseStatus = {
   },
   401: {
     status: "Unauthorized",
-    message: "The client must authenticate itself to get the requested response."
+    message: "Unauthorised action requested. Please provide a valid authentication."
   },
   403: {
     status: "Forbidden",
-    message: "The client does not have access rights to the content",
+    message: "The client does not have access rights to the content.",
   },
   404: {
-    message: "Unauthorised action requested. Please provide a valid authentication.",
-    status: 'Not Found'
+    status: 'Not Found',
+    message: "The server cannot find the requested resource.",
   },
   500: {
     status: "Internal Server Error",
@@ -43,10 +57,24 @@ const errors: ResponseStatus = {
     status: "Bad Gateway",
     message: "Server got an invalid response."
   }
-}
+};
 
-class HandleError {
-  constructor() {
+type ErrorCode = keyof typeof errors;
 
-  }
-}
+/**
+ * 
+ * @param code Number denoting the error type.
+ * @returns 
+ */
+export function ReturnErrorMessage(code: ErrorCode): string {
+  return errors[code].message
+};
+
+/**
+ * 
+ * @param code Number denoting the error type.
+ * @returns 
+ */
+export function ReturnErrorStatus(code: ErrorCode): string {
+  return errors[code].status
+};
