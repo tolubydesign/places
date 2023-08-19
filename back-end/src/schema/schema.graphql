@@ -61,14 +61,13 @@ type UserID {
 # clients can execute, along with the return type for each. In this
 # case, the "books" query returns an array of zero or more Books (defined above).
 type Query {
-  getAllBooks: [Book],
   getAllPlaces: [Place]
 }
 
 type Mutation {
-  createAccount(email: String!, username: String!, password: String!, name: String, lastname: String): UserDetails,
+  createAccount(email: String!, username: String!, password: String!, name: String, surname: String): UserDetails,
   deleteAccount(id: String!, email: String!): UserID,
-  updateAccount(email: String!, username: String!, password: String!, name: String, lastname: String): UserID,
+  updateAccount(email: String!, username: String!, password: String!, name: String, surname: String): UserID,
 }
 
 # Mutations

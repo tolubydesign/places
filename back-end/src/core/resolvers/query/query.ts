@@ -2,18 +2,8 @@ import { GraphQLError } from "graphql";
 import mariadb from "../../../utils/connection/mariadb.connection";
 import { Place } from "../model";
 import { GraphQLFieldResolverParams } from "@apollo/server";
-
-const books = [
-  {
-    title: 'The Awakening',
-    author: 'Kate Chopin',
-  },
-  {
-    title: 'City of Glass',
-    author: 'Paul Auster',
-  },
-];
-
+import { ReturnErrorStatus } from "../../../helpers/response-handling";
+import { GraphQLErrorIfMariaDBUndefined } from "../../../helpers/database/checks";
 
 /**
  * Full collection of Apollo queries.
@@ -22,19 +12,11 @@ const books = [
  */
 export function ApolloQueries(): Record<string, (context: GraphQLFieldResolverParams<undefined, any, any>) => unknown> {
   return {
-    getAllBooks: async () => {
-      return books
-    },
     getAllPlaces: async (): Promise<Place[] | undefined> => {
-      if (!mariadb) {
-        throw new GraphQLError("Can't connect to database.", {
-          extensions: {
-            code: "Internal Server Error",
-          },
-        });
-      }
+      const connection = await mariadb;
+      const establishedConnection = GraphQLErrorIfMariaDBUndefined(connection);
 
-      const places: Place[] | undefined = await (await mariadb)?.query(`SELECT * FROM place`);
+      const places: Promise<Place[] | undefined> = establishedConnection.query(`SELECT * FROM place`);
       return places;
     }
   }

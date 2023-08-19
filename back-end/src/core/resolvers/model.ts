@@ -20,7 +20,7 @@ export type Account = {
   id: string,
   username: string,
   name: string,
-  lastname: string,
+  surname: string,
   password: string,
   email: string,
 }
