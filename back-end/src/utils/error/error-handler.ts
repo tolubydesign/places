@@ -1,14 +1,16 @@
 import { GraphQLError, GraphQLErrorOptions } from 'graphql';
-import {ReturnErrorMessage} from "../../helpers/response-handling";
+import { ReturnResponseStatus } from "../../helpers/response-handling";
 
 /**
- * ...
+ * Internal Server Error Handler that extends the graphql GraphQL Error class.
+ * 
+ * Used to return and error if issues occurred when request is made.
  */
 export class ApolloInternalServerError extends GraphQLError {
   constructor(message: string) {
     const options: GraphQLErrorOptions = {
       extensions: {
-        code: ReturnErrorMessage(403) ,
+        code: ReturnResponseStatus(403),
       }
     };
 
@@ -17,13 +19,15 @@ export class ApolloInternalServerError extends GraphQLError {
 }
 
 /**
- * ...
+ * Unauthorised Error Handler that extends the graphql GraphQL Error class.
+ * 
+ * Used to return and error if issues occurred when request is made.
  */
 export class ApolloUnauthorisedError extends GraphQLError {
   constructor(message: string) {
     const options: GraphQLErrorOptions = {
       extensions: {
-        code: ReturnErrorMessage(401) ,
+        code: ReturnResponseStatus(401),
       }
     };
 

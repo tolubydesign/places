@@ -1,6 +1,8 @@
-type ErrorDetail = { status: string, message: string }
+type Response = { status: string, message: string }
 
-const ErrorArray = [
+type RequestResponseCode = 200 | 201 | 202 | 400 | 401 | 403 | 404 | 500 | 501 | 502;
+
+const RequestResponseCodes = [
   200,
   201,
   202,
@@ -13,17 +15,16 @@ const ErrorArray = [
   502,
 ] as const;
 
-type PossibleErrorCodes = typeof ErrorArray[keyof typeof ErrorArray];
-type ResponseStatus = Record<typeof ErrorArray[number], ErrorDetail>;
+type ResponseStatus = { [key in RequestResponseCode] : Response };
 
-const errors: ResponseStatus = {
+const responses: ResponseStatus = {
   200: {
     status: "OK",
-    message: "The request succeeded."
+    message: "Request completed Successful."
   },
   201: {
     status: "Created",
-    message: "The request succeeded."
+    message: "The created succeeded."
   },
   202: {
     status: "Accepted",
@@ -59,22 +60,38 @@ const errors: ResponseStatus = {
   }
 };
 
-type ErrorCode = keyof typeof errors;
+type ResponseCode = keyof typeof responses;
 
 /**
- * 
+ * Return the relevant response message, bases on `code` number provided.
  * @param code Number denoting the error type.
  * @returns 
  */
-export function ReturnErrorMessage(code: ErrorCode): string {
-  return errors[code].message
+export function ReturnResponseMessage(code: ResponseCode): string {
+  return responses[code].message
 };
 
 /**
- * 
+ * Get a relevant status, bases on `code` number provided.
  * @param code Number denoting the error type.
  * @returns 
  */
-export function ReturnErrorStatus(code: ErrorCode): string {
-  return errors[code].status
+export function ReturnResponseStatus(code: ResponseCode): string {
+  return responses[code].status
+};
+
+/**
+ * Return the relevant request response, bases on `code` number provided.
+ * @param code Number denoting the error type.
+ * @returns 
+ */
+export function ReturnResponse(code: ResponseCode): Response {
+  return responses[code]
+}
+
+type SuccessResponseTitles = "completed" | "successful";
+type SuccessResponseContent = {
+  code: 200,
+  status: Capitalize<SuccessResponseTitles>,
+  message: string
 };

@@ -1,9 +1,9 @@
-import { GraphQLErrorIfMariaDBUndefined } from "../../../helpers/database/checks";
-import { ReturnErrorStatus } from "../../../helpers/response-handling";
+import { ApolloInternalServerError } from "../../../utils/error/error-handler";
+import { CreateConnectionToMariadb } from "../../../helpers/database/checks";
 import mariadbConnection from "../../../utils/connection/mariadb.connection";
-import { AccountCreationArgs, MutationGraphQLFieldResolverParams, UserDetails } from "./model.mutations";
-import { GraphQLFieldResolverParams } from "@apollo/server";
+import { AccountCreationArgs, DeleteAccountRequestArgs, MutationGraphQLFieldResolverParams, UserDetails } from "./model.mutations";
 import { GraphQLError, GraphQLResolveInfo } from "graphql";
+import { ReturnResponse } from "../../../helpers/response-handling";
 
 
 /**
@@ -17,32 +17,28 @@ export function ApolloMutations(): Record<string, (
   info: GraphQLResolveInfo
 ) => any> {
   return {
-    // parent: undefined, args: AccountCreationArgs, context: any, info: any
-    createAccount: async (_, { email, surname, name, password, username }: AccountCreationArgs, context, info): Promise<any> => {
-      const connection = await (await mariadbConnection);
-      const establishedConnection = GraphQLErrorIfMariaDBUndefined(connection);
-      const accounts: UserDetails | undefined = await establishedConnection.query(`SELECT * FROM account`);
-      console.log('function call create account, accounts', accounts);
-
+    createAccount: async (_, { email, surname, name, password, username }: AccountCreationArgs, context, info): Promise<UserDetails> => {
+      const connection = await CreateConnectionToMariadb(mariadbConnection);
+      // TODO: JWT connection
       const sql = `
         INSERT INTO account (username, password, email, surname, name)
         VALUES (?, ?, ?, ?, ?)
         RETURNING id,username
       `;
       const values = [username, password, email, surname, name];
-
-      const user: Promise<UserDetails[] | undefined> = establishedConnection.query(sql, values);
+      const user: Promise<UserDetails[] | undefined> = connection.query(sql, values);
       const returningUser = await user;
-      console.log('function call create account, awaited user', returningUser);
-      if (!returningUser) {
-        throw new GraphQLError("");
-      }
 
+      console.log('function call create account, awaited returningUser', returningUser);
 
+      if (!returningUser) throw new ApolloInternalServerError("Request to database did not return the relevant information.");
       return returningUser[0];
     },
-    deleteAccount: async () => {
-
-    }
+    deleteAccount: async (_, { id }: DeleteAccountRequestArgs, context, info) => {
+      const connection = await CreateConnectionToMariadb(mariadbConnection)
+      const sql = `DELETE FROM account WHERE id=?`
+      connection.query(sql, id);
+      return ReturnResponse(200)
+    },
   }
 }
