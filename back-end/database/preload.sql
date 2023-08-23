@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS account (
   surname TEXT, 
   password TEXT NOT NULL,
   email TEXT NOT NULL UNIQUE,
+  account_type ENUM('admin', 'user') DEFAULT 'user',
 
   primary key(id)
   -- CONSTRAINT "user_pkey" PRIMARY KEY ("id")
@@ -40,13 +41,13 @@ CREATE TABLE IF NOT EXISTS account (
 -- CreateIndex
 -- CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
-INSERT INTO account(username, password, email, name, surname)
+INSERT INTO account(username, password, email, name, surname, account_type)
 VALUES
-  ("john", "password", "john@john.com", "John", "Smith"),
-  ("sam", "password", "sam@gmail.com", "Sam", "Fisher" ),
-  ("jack", "password", "jack@mail.com", "Jack", "Carber"),
-  ("mark", "password", "mark@cmail.com", "Mark", "Wallberg"),
-  ("abbrem", "word", "ab@gmail.com", "Abb", "Abraham");
+  ("john", "password", "john@john.com", "John", "Smith", "admin"),
+  ("sam", "password", "sam@gmail.com", "Sam", "Fisher", "user"),
+  ("jack", "password", "jack@mail.com", "Jack", "Carber", "user"),
+  ("mark", "password", "mark@cmail.com", "Mark", "Wallberg", "user"),
+  ("abbrem", "word", "ab@gmail.com", "Abb", "Abraham", "admin");
 
 -- Table
 CREATE TABLE IF NOT EXISTS place (
