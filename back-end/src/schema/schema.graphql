@@ -18,8 +18,8 @@ enum Episode {
 }
 
 enum AccountType {
-  user
   admin
+  user
 }
 
 type Place {
@@ -46,6 +46,7 @@ type AccountDetails {
   surname: String
   password: String
   email: String
+  account_type: AccountType
 }
 
 type UserDetail {
@@ -54,6 +55,7 @@ type UserDetail {
   name: String
   surname: String
   email: String
+  account_type: AccountType
 }
 
 type UserID {
