@@ -1,11 +1,14 @@
 #!/bin/bash
 # set -e
 echo "Initalising database bash"
-echo What is the name of the docker container?:
-read container_name
 
-echo What is the password?:
-read container_password
+read -p "What is the name of the docker container?: " container_name
+container_name=${container_name:-placesmariadbcontainer}
+echo $container_name
+
+read -p "What is the password?: " container_password
+container_password=${container_password:-secret}
+echo $container_password
 
 db="mydb"
 
