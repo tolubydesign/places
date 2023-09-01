@@ -233,13 +233,15 @@ ___
   + ~~Connect and update docker container MariaDB~~
   + ~~Create Error class types like _ValidationError_ or _InternalServerError_~~
   + ~~Create `.sh` file to connect to database~~
-  + Create users with different account levels. i.e. `Admin` OR `User`
-  + Requests - add location event
-    + REQUEST - get single location/places based on id
-    + REQUEST - get all locations/places
+  + ~~Create users with different account levels. i.e. `Admin` OR `User`~~
+  + Add account groups
+  + ~~Requests - add location event~~
+    + ~~REQUEST - get single location/places based on id~~
+    + ~~REQUEST - get all locations/places~~
   + ~~Requests - create user~~
-  + Requests - delete user (should require admin user)
-  + Requests - track users that are online and that are not online
+  + ~~Requests - delete user (should require admin user)~~
   + Use JWT tokens
   + Requests - bookmark events
   + Document requests
+  + System - setup login system
+    + Requests - track users that are online and that are not online
