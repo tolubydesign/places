@@ -4,10 +4,12 @@
   "ignore": [
     ".git", 
     "_mariadb_database/**",
-    "_minio_storage/**"
+    "_minio_storage/**",
+    "database/**"
   ],
   "watch": [
-    "src/**",
-    "src/server.ts"
+    "src/**/**",
+    "src/server.ts",
+    "/src/schema/**"
   ]
 }
