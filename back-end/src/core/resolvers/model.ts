@@ -7,7 +7,7 @@ export type Place = {
   latitude: string,
   longitude: string,
   event_time: Date | string,
-  event_type: 'private' | "public",
+  event_type: "private" | "public",
   street: string,
   city: string,
   suburb: string,
@@ -23,6 +23,15 @@ export type Account = {
   surname: string,
   password: string,
   email: string,
+  account_type: "admin" | "user",
+}
+
+export type Bookmark = {
+  id: string,
+  name: string,
+  information: string,
+  creator_id: string,
+  location_id: string,
 }
 
 export type AccountDetails = Omit<Account, "password">;

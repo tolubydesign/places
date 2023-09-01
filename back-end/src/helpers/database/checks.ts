@@ -11,7 +11,7 @@ export function GraphQLErrorIfMariaDBUndefined(mariadbConnection: PoolConnection
   if (!mariadbConnection) {
     throw new GraphQLError("Can't connect to database.", {
       extensions: {
-        code: ReturnResponseStatus(500),
+        code: "INTERNAL_SERVER_ERROR",
       },
     });
   }

@@ -1,5 +1,4 @@
-type Response = { status: string, message: string }
-
+import { ApolloServerErrorCode } from '@apollo/server/errors';
 type RequestResponseCode = 200 | 201 | 202 | 400 | 401 | 403 | 404 | 500 | 501 | 502;
 
 const RequestResponseCodes = [
@@ -14,6 +13,17 @@ const RequestResponseCodes = [
   501,
   502,
 ] as const;
+
+export type GraphQLResponseCode =
+  "FORBIDDEN" | // Action requires authentication. User doest have the access rights to the resource.
+  "CREATED" |
+  "OK" | 
+  "ACCEPTED"
+;
+
+export type KeyTypeApolloServerErrorCode = keyof typeof ApolloServerErrorCode;
+
+type Response = { status: string, message: string};
 
 type ResponseStatus = { [key in RequestResponseCode] : Response };
 
