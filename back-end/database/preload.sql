@@ -107,6 +107,7 @@ VALUES
 -- //=
 
 -- Table
+-- https://stackoverflow.com/questions/17371639/how-to-store-arrays-in-mysql
 CREATE TABLE person (
   id INT NOT NULL PRIMARY KEY,
   name VARCHAR(50)

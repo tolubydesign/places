@@ -158,7 +158,40 @@ __Get Account Response:__
 }
 ```
 ___
+__Get All Bookmark Groups Query__
+```graphql
+query AllBookmarkGroups {
+  allBookmarkGroups {
+    id
+    title
+    description
+    creator_id
+    timestamp
+  }
+}
+```
+__Get All Bookmark Groups Response:__
+```json
+{
+  "data": {
+    "allBookmarkGroups": [
+      {
+        "id": "30f2e906-48b9-11ee-a1bd-0242ac130003",
+        "title": "Solve Problems",
+        "description": "Description of the bookmark group Solve Problem.",
+        "creator_id": "28a780e5-48b7-11ee-a1bd-0242ac130003",
+        "timestamp": "1693596024000"
+      },
+      {...}
+    ]
+  }
+}
+```
 
+
+___
+___
+___
 ___
 ### Mutations:
 
@@ -226,6 +259,42 @@ __Create Account Response:__
 }
 ```
 ___
+__Create Bookmark Group Request:__
+```
+mutation CreateBookmarkGroup($userId: String!, $title: String, $description: String) {
+  createBookmarkGroup(userID: $userId, title: $title, description: $description) {
+    status
+    message
+  }
+}
+```
+__Create Bookmark Group Variables:__
+```json
+{
+  "userId": "28a780e5-48b7-11ee-a1bd-0242ac130003",
+  "title": "Places To Be",
+  "description": "Description of the bookmark group Places To Be."
+}
+```
+
+__Create Account Response:__
+```json
+{
+  "data": {
+    "createBookmarkGroup": {
+      "status": "OK",
+      "message": "Request completed Successful."
+    }
+  }
+}
+```
+___
+
+...
+___
+___
+___
+___
 
 ## TODO:
   + ~~Create `.sh` to easily work with docker mariadb~~
@@ -241,7 +310,7 @@ ___
   + ~~Requests - create user~~
   + ~~Requests - delete user (should require admin user)~~
   + Use JWT tokens
-  + Requests - bookmark events
+  + ~~Requests - bookmark events~~
   + Document requests
   + System - setup login system
     + Requests - track users that are online and that are not online

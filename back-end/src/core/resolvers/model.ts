@@ -1,19 +1,20 @@
 
 export type Place = {
-  id: string, 
+  id: string,
   name: string,
   description: string,
-  location_type: string | null,
-  latitude: string,
-  longitude: string,
-  event_time: Date | string,
-  event_type: "private" | "public",
+  owner: string,
+  location_type: string,
+  latitude: number,
+  longitude: number,
+  event_time: string,
+  event_type: "open" | "private" | "invite required",
   street: string,
   city: string,
   suburb: string,
   country: string,
   province: string,
-  code: number,
+  code: string
 }
 
 export type Account = {
